@@ -1,0 +1,2 @@
+include README.rst setup.cfg LICENSE
+recursive-include html_reports/templates *

@@ -1,6 +1,10 @@
+# --------------------- COMMON EXCLUSIONS -------------------------------------
 # Sublime settings
 sublime.sublime-project
 sublime.sublime-workspace
+
+# Pycharm files
+.idea
 
 # Python temporal files
 *.pyc
@@ -32,6 +36,25 @@ build/
 dist/
 *.egg-info
 
+# Executables
+*.exe
+
+
+# --------------------- PERSONAL EXCLUSIONS -----------------------------------
 # Data folders
 /data
 */data
+
+
+# --------------------- PROJECT EXCLUSIONS ------------------------------------
+
+# Playground notebooks
+*/test.ipynb
+
+# Temp files
+*/temp.md
+*/*/temp.md
+*/temp.ipynb
+
+# Default report.html file
+*/report.html
