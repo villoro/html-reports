@@ -13,11 +13,9 @@ from reports import Report
 
 report = Report()
 
-rep.add_markdown("""
-# Hello
-
-Just trying the reports module
-""")
+rep.add_title("title1")
+rep.add_title("title1.1", level=2)
+rep.add_markdown("Some text")
 
 rep.write_report()
 ```

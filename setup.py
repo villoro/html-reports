@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name="html-reports",
-    version="0.0.0.11",
+    version="0.0.1",
     author="Arnau Villoro",
     author_email="arnau@villoro.com",
     packages=["html_reports"],
