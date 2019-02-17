@@ -1,6 +1,32 @@
 # HTML Reports
 
-This allows people to create html reports.
+Module for creating html reports based on jinja2 templates.
+
+## Usage
+
+First you should create a report. Then you can add content to it. When you have all the content you can render it in a file with the `write_report` function.
+
+For example:
+
+```python
+from reports import Report
+
+report = Report()
+
+rep.add_markdown("""
+# Hello
+
+Just trying the reports module
+""")
+
+rep.write_report()
+```
+
+This will create the `report.html` file using the `templates/simple.html` template.
+
+## Installation
+
+	pip install -r requirements.txt
 
 ## Authors
 * [Arnau Villoro](https://villoro.com)
