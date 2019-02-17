@@ -1,5 +1,8 @@
 """ Reports module """
 
+import os
+
+import easydev
 from jinja2 import Template
 from markdown import markdown
 from bs4 import BeautifulSoup
@@ -21,17 +24,17 @@ def transform_markdown(text):
 class Report:
     """ html report class """
 
-    def __init__(self, title="Report"):
+    def __init__(self, title="Report", scripts=[], raw_scripts=[], styles={}):
 
         # Main arguments
         self.args = {"title": title}
 
         # Script resources
-        self.scripts = []
-        self.raw_scripts = []
+        self.scripts = scripts
+        self.raw_scripts = raw_scripts
 
         # Style resources
-        self.styles = {}
+        self.styles = styles
 
         # Body
         self.body = []
@@ -54,11 +57,42 @@ class Report:
 
         self.body.append(transform_markdown(text))
 
-    def write_report(self, template="templates/simple.html", filename="report.html", prettify=True):
-        """ Writes the html reprot """
+    def add_title(self, title, level=1):
+        """ Adds a title """
+
+        # Create a title using markdown
+        self.add_markdown(f"{'#'*level} {title}")
+
+    def write_report(
+        self, template_name="simple", template_path=None, filename="report.html", prettify=True
+    ):
+        """
+            Writes the html report.
+
+            Args:
+                template_name:  name of the template to use (only used if template_path is None)
+                template_path:  path of the custom template to use
+                filename:       output file to write
+                prettify:       bool to prettify the output html
+
+            Available templates are:
+            * simple
+        """
+
+        # If no custom path, use one of the predefined templates
+        if template_path is None:
+            relative_uri = f"html_reports/templates/{template_name}.html"
+
+            template_uri = os.sep.join(
+                [easydev.get_package_location("html_reports")] + relative_uri.split("/")
+            )
+
+        # Else, use user template
+        else:
+            template_uri = template_path
 
         # Load jinja2 template
-        template = read_template(template)
+        template = read_template(template_uri)
 
         # Render jinja2 template
         output = template.render(
@@ -66,7 +100,7 @@ class Report:
             scripts=self.scripts,
             raw_scripts=self.raw_scripts,
             styles=self.styles,
-            **self.args
+            **self.args,
         )
 
         # Prettify html file
