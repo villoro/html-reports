@@ -1,11 +1,14 @@
 """ Reports module """
 
 import os
+from io import BytesIO
+import base64
 
 import easydev
 from jinja2 import Template
 from markdown import markdown
 from bs4 import BeautifulSoup
+
 
 
 def read_template(uri):
@@ -39,6 +42,9 @@ class Report:
         # Body
         self.body = []
 
+        # Figures
+        self.figures = {} 
+
     def add_script(self, script, raw=False):
         """ Adds a script resource """
         if raw:
@@ -62,6 +68,42 @@ class Report:
 
         # Create a title using markdown
         self.add_markdown(f"{'#'*level} {title}")
+
+
+    def add_figure (self, figurename = None, options = None, thumb_fmt = 'png', link_fmt = 'pdf'):
+      """ 
+      Adds the latest displayed matplotlib figure. 
+      
+      Can create a file in a dedicated directory and link it to the thumbnail
+      shown in the html page. 
+
+      Args:
+        figurename: name of the file, if None no figure file is created
+        options: string of html attributes of the IMG tag, default: "width = 49%"
+        thumb_fmt: file format for the thumbnail (default png)
+        link_fmt: file format of the linked file (default pdf) 
+      """
+      import matplotlib.pyplot as plt 
+
+      tmpfile = BytesIO()
+      plt.savefig(tmpfile, format=thumb_fmt)
+      encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+
+      if figurename is None: 
+        self.body.append ("<img src=\'data:image/{};base64,{}\' {}>".
+            format(thumb_fmt, encoded, options or "width = 49%") ) 
+      else:
+        tmpfile = BytesIO()
+        plt.savefig(tmpfile, format=link_fmt)
+        encoded_pdf = tmpfile 
+        self.figures [figurename+'.'+link_fmt] = encoded_pdf.getbuffer()
+
+        self.body.append ( """
+        <a href = \'img/{}.{}\'>
+          <img src=\'data:image/{};base64,{}\' {}>
+        </a>
+        """.format(figurename, link_fmt, thumb_fmt, encoded, options or "width = 49%") ) 
+
 
     def write_report(
         self, template_name="simple", template_path=None, filename="report.html", prettify=True
@@ -110,3 +152,18 @@ class Report:
         # Write html file
         with open(filename, "w") as file:
             file.write(output)
+
+
+        if len ( self.figures ): 
+          figure_path = os.path.join ( 
+              os.path.dirname ( os.path.abspath ( filename ) ) ,
+              "img"
+            )
+
+          if not os.path.exists (figure_path): 
+            os.mkdir ( figure_path ) 
+
+
+          for figurename, figuredata in self.figures.items(): 
+            with open(os.path.join ( figure_path, figurename ), "wb") as file: 
+              file.write ( figuredata ) 
