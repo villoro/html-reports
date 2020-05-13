@@ -11,7 +11,7 @@ For example:
 ```python
 from reports import Report
 
-report = Report()
+rep = Report()
 
 rep.add_title("title1")
 rep.add_title("title1.1", level=2)
@@ -24,15 +24,14 @@ This will create the `report.html` file using the `templates/simple.html` templa
 
 ### Pyplot figures
 
-Create a figure with pyplot and append it to the report
+Create a figure with pyplot and append it to the report with:
+
 ```python
 import matplotlib.pyplot as plt
-plt.plot ([1,2,3]) 
+plt.plot ([1, 2, 3]) 
 
 rep.add_figure() 
 ```
-
-
 
 ## Installation
 
