@@ -22,6 +22,18 @@ rep.write_report()
 
 This will create the `report.html` file using the `templates/simple.html` template.
 
+### Pyplot figures
+
+Create a figure with pyplot and append it to the report
+```python
+import matplotlib.pyplot as plt
+plt.plot ([1,2,3]) 
+
+rep.add_figure() 
+```
+
+
+
 ## Installation
 
 	pip install -r requirements.txt
